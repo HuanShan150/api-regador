@@ -1,6 +1,6 @@
-# Microject
+# Regador-API
 
-Este é um projeto Spring Boot utilizando arquitetura hexagonal, Docker. O projeto é uma aplicação de gerenciamento de projetos, clientes e atividades.
+Este é um projeto Spring Boot utilizando arquitetura hexagonal, Docker. O projeto é uma aplicação para trabalho de Embarcados
 
 ## Tecnologias Utilizadas
 
@@ -9,8 +9,6 @@ Este é um projeto Spring Boot utilizando arquitetura hexagonal, Docker. O proje
 - Spring Data JPA (Hibernate)
 - H2 Database
 - Docker
-- JUnit 5
-- Mockito
 - Postgres
 
 ## Estrutura do Projeto
@@ -75,107 +73,36 @@ A estrutura do projeto segue a arquitetura HEXAGONAL (Ports and Adapters), divid
   Obs2: Necessario que o consumidor utilizer a localhost:5173, caso deseje usar outra porta adicionar no WebConfig.java
 
   Endpoints da API
-  Clientes:
+  Regas:
   
-    POST /clientes: Adicionar um novo cliente
-    GET /clientes: Listar todos os clientes
-    GET /clientes/{id}: Buscar cliente por ID
-    DELETE /clientes/{id}: Remover cliente por ID
+    POST /regas: Adicionar uma nova rega
+    GET /regas: Listar todos as regas
+    GET /regas/{id}: Buscar rega por ID
+    DELETE /regas/{id}: Remover rega por ID
   
-  Projetos:
-  
-    POST /projetos: Adicionar um novo projeto
-    GET /projetos: Listar todos os projetos
-    GET /projetos/{id}: Buscar projeto por ID
-    DELETE /projetos/{id}: Remover projeto por ID
-    GET /projetos/cliente/{clienteId}: Listar projetos por cliente
-  
-  Atividades:
-  
-    POST /atividades: Adicionar uma nova atividade
-    GET /atividades: Listar todas as atividades
-    GET /atividades/{id}: Buscar atividade por ID
-    DELETE /atividades/{id}: Remover atividade por ID
-    GET /atividades/projeto/{projetoId}: Listar atividades por projeto
-    PUT /atividades/editar/{id}: Atualizar uma atividade
+  Exemplo POST:
+    POST /regas HTTP/1.1
+    Host: seu-servidor
+    Content-Type: application/json
+    
+    {
+        "umidade": 45.7
+    }
+  Resposta (200 ok): 
+    {
+    "id": 1,
+    "umidade": 45.7,
+    "dataHora": "2023-10-31T12:34:56.789+00:00"
+    }
+
+
 
 Banco de Dados: 
 
-  Cliente
+  Rega
 
 ID (PK)          
-Nome             
-Email            
-
-
-              
-              |
-              |
-              v
-Projeto
-
-ID (PK)          
-Nome             
-Cliente_ID (FK)  
-ProjetoStatus    
-
-
-              
-              |
-              |
-              v
-Atividade
-
-ID (PK)          
-Descricao        
-AtividadeStatus  
-Projeto_ID (FK)  
-
-
-Diagrama de Classes: 
-
-Cliente
-
- - ID: Long       
- - Nome: String   
- - Email: String  
-
-            
-            |
-            |
-            v
-Projeto
-
- - ID: Long                
- - Nome: String            
- - Cliente: Cliente        
- - ProjetoStatus: Enum     
- - Atividades: List<Atividade> 
-
-            1
-            |
-            |
-            v
-Atividade
-
- - ID: Long                    
- - Descricao: String           
- - AtividadeStatus: Enum       
- - Projeto: Projeto            
-
-
-AtividadeStatus (Enum)
-
- BACKLOG          
- EM_ANDAMENTO     
- EM_REVISAO       
- CONCLUIDO        
-
-
-ProjetoStatus (Enum)
-
- ABERTO  
- EM_ANDAMENTO
- FECHADO          
+Umidade Double             
+Data            
 
 
