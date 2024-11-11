@@ -1,49 +1,37 @@
+# Etapa de build
 FROM openjdk:17-jdk-slim AS build
 
-# Instalar pacotes necess�rios, incluindo Docker CLI
-RUN apt-get update && apt-get install -y \
-    findutils \
-    curl \
-    gnupg \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
-    git && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update && \
-    apt-get install -y docker-ce-cli
+# Definir variável de ambiente para desabilitar o Gradle Daemon
+ENV GRADLE_OPTS="-Dorg.gradle.daemon=false"
 
 WORKDIR /home/app
+
+# Copiar arquivos necessários
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 
+# Dar permissão de execução ao gradlew
 RUN chmod +x ./gradlew
+
+# Garantir que estamos usando a versão correta do Gradle
 RUN ./gradlew wrapper --gradle-version=7.5 --distribution-type=bin
-#RUN ./gradlew clean build --no-daemon
 
+# Construir o aplicativo
+RUN ./gradlew clean build --no-daemon
+
+# Etapa final
 FROM openjdk:17-jdk-slim
-
-# Instalar Docker CLI na imagem final
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
-    git && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update && \
-    apt-get install -y docker-ce-cli
 
 WORKDIR /home/app
 
-COPY --from=build /home/app /home/app
+# Copiar o JAR compilado da etapa de build
+COPY --from=build /home/app/build/libs/*.jar app.jar
 
+# Expor a porta (ajuste se necessário)
 EXPOSE 8080
 
-ENTRYPOINT ["./gradlew", "bootRun"]
+# Executar o aplicativo
+ENTRYPOINT ["java", "-jar", "app.jar"]
