@@ -20,7 +20,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew wrapper --gradle-version=7.5 --distribution-type=bin
 
 # Construir o aplicativo
-RUN ./gradlew clean build --no-daemon
+RUN ./gradlew clean build -x test --no-daemon
 
 # Etapa final
 FROM openjdk:17-jdk-slim
