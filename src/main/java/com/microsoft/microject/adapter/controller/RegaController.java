@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/regas")
+@CrossOrigin(origins = "*")
 public class RegaController {
 
     private final RegaService regaService;
